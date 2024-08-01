@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+    struct Node* prev;
+} Node;
+
+// Create a node and insert it into the list
+void insertEnd(Node** head, int data) {
+    Node* node = (Node*)malloc(sizeof(Node));
+    if (!node) { printf("Memory allocation failed\n"); exit(1); }
+    node->data = data;
+    if (*head) {
+        Node* last = (*head)->prev;
+        last->next = node;
+        node->prev = last;
+        node->next = *head;
+        (*head)->prev = node;
+    } else {
+        node->next = node->prev = node;
+        *head = node;
+    }
+}
+
+// Display the list
+void displayList(Node* head) {
+    if (!head) { printf("List is empty\n"); return; }
+    Node* temp = head;
+    do { printf("%d ", temp->data); temp = temp->next; } while (temp != head);
+    printf("\n");
+}
+
+// Delete a node
+void deleteNode(Node** head, int data) {
+    if (!*head) { printf("List is empty\n"); return; }
+    Node* temp = *head;
+    do {
+        if (temp->data == data) {
+            if (temp->next == temp) { free(temp); *head = NULL; }
+            else {
+                Node* prevNode = temp->prev;
+                if (temp == *head) *head = temp->next;
+                prevNode->next = temp->next;
+                temp->next->prev = prevNode;
+                free(temp);
+            }
+            return;
+        }
+        temp = temp->next;
+    } while (temp != *head);
+    printf("Node with data %d not found\n", data);
+}
+
+int main() {
+    Node* head = NULL;
+    for (int i = 10; i <= 40; i += 10) insertEnd(&head, i);
+    printf("Circular Doubly Linked List: ");
+    displayList(head);
+    deleteNode(&head, 30); printf("After deleting 30: "); displayList(head);
+    deleteNode(&head, 10); printf("After deleting 10: "); displayList(head);
+    while (head) deleteNode(&head, head->data);
+return 0;
+}
+
+out put:
+Circular Doubly Linked List: 10 20 30 40 
+After deleting 30: 10 20 40 
+After deleting 10: 20 40 
