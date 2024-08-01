@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+
+typedef struct StackNode {
+    int data;
+    struct StackNode* next;
+} StackNode;
+StackNode* createStackNode(int data) {
+    StackNode* newNode = (StackNode*) malloc(sizeof(StackNode));
+    if (!newNode) {
+        printf("Memory error\n");
+        return NULL;
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+int isEmpty(StackNode* top) {
+    return top == NULL;
+}
+void push(StackNode** top, int data) {
+    StackNode* newNode = createStackNode(data);
+    if (*top) {
+        newNode->next = *top;
+    }
+    *top = newNode;
+}
+int pop(StackNode** top) {
+    if (isEmpty(*top)) {
+        printf("Stack is empty\n");
+        return -1;
+    }
+    int data = (*top)->data;
+    StackNode* temp = *top;
+    *top = (*top)->next;
+    free(temp);
+    return data;
+}
+int evaluatePostfix(char* expression) {
+    StackNode* top = NULL;
+    for (int i = 0; i < strlen(expression); i++) {
+        if (isdigit(expression[i])) {
+            
+            push(&top, expression[i] - '0');
+        } else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/') {
+            int operand2 = pop(&top);
+            int operand1 = pop(&top);
+            int result;
+            switch (expression[i]) {
+                case '+':
+                    result = operand1 + operand2;
+                    break;
+                case '-':
+                    result = operand1 - operand2;
+                    break;
+                case '*':
+                    result = operand1 * operand2;
+                    break;
+                case '/':
+                    result = operand1 / operand2;
+                    break;
+            }
+            push(&top, result);
+        }
+    }
+    return pop(&top);
+}
+
+int main() {
+    char expression[] = "23+4*";
+    printf("Postfix expression: %s\n", expression);
+    printf("Result: %d\n", evaluatePostfix(expression));
+    return 0;
+}
+
+output:
+Postfix expression: 23+4*
+Result: 20
