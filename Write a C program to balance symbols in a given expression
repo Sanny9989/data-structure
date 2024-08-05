@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX 100
+int isEmpty(int top) {
+    return top == -1;
+}
+void push(char stack[], int *top, char element) {
+    stack[++(*top)] = element;
+}
+char pop(char stack[], int *top) {
+    return stack[(*top)--];
+}
+int balanceSymbols(char expression[]) {
+    char stack[MAX];
+    int top = -1;
+
+    for (int i = 0; i < strlen(expression); i++) {
+        switch (expression[i]) {
+            case '(':
+            case '[':
+            case '{':
+                push(stack, &top, expression[i]);
+                break;
+            case ')':
+                if (isEmpty(top) || pop(stack, &top) != '(') {
+                    return 0;
+                }
+                break;
+            case ']':
+                if (isEmpty(top) || pop(stack, &top) != '[') {
+                    return 0;
+                }
+                break;
+            case '}':
+                if (isEmpty(top) || pop(stack, &top) != '{') {
+                    return 0;
+                }
+                break;
+        }
+    }
+    return isEmpty(top);
+}
+int main() {
+    char expression[MAX];
+    printf("Enter an expression: ");
+    scanf("%s", expression);
+    if (balanceSymbols(expression)) {
+        printf("Symbols are balanced.\n");
+    } else {
+        printf("Symbols are not balanced.\n");
+    }
+    return 0;
+}
+output:-
+Enter an expression: (a + b * (c + d)
+Symbols are not balanced.
