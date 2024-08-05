@@ -1,0 +1,30 @@
+#include <stdio.h>
+void towerOfHanoi(int n, char from, char to, char aux) {
+    switch (n) {
+        case 0:
+            return;
+        case 1:
+            printf("Move disk 1 from rod %c to rod %c\n", from, to);
+            return;
+        default:
+            towerOfHanoi(n - 1, from, aux, to);
+            printf("Move disk %d from rod %c to rod %c\n", n, from, to);
+            towerOfHanoi(n - 1, aux, to, from);
+    }
+}
+int main() {
+    int n;
+    printf("Enter the number of disks: ");
+    scanf("%d", &n);
+    towerOfHanoi(n, 'A', 'C', 'B');
+    return 0;
+}
+output:-
+Enter the number of disks: 3
+Move disk 1 from rod A to rod C
+Move disk 2 from rod A to rod B
+Move disk 1 from rod C to rod B
+Move disk 3 from rod A to rod C
+Move disk 1 from rod B to rod A
+Move disk 2 from rod B to rod C
+Move disk 1 from rod A to rod C
